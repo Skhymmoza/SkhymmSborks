@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkhymmSborks — КРМП Black Russia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #f0f0f5;
+      --muted: rgba(240,240,245,0.45);
+      --accent: #5b8cff;
+      --accent2: #a78bfa;
+      --glow: rgba(91,140,255,0.18);
+      --card-blur: blur(18px) saturate(1.6);
+      --radius: 20px;
+    }
+
+    [data-theme="light"] {
+      --bg: #f0f0f5;
+      --surface: rgba(255,255,255,0.6);
+      --surface-hover: rgba(255,255,255,0.82);
+      --border: rgba(0,0,0,0.08);
+      --border-hover: rgba(0,0,0,0.18);
+      --text: #111118;
+      --muted: rgba(10,10,20,0.45);
+      --accent: #3b6fff;
+      --accent2: #7c3aed;
+      --glow: rgba(59,111,255,0.12);
+    }
+
+    [data-theme="warm"] {
+      --bg: #0f0a08;
+      --surface: rgba(255,200,130,0.06);
+      --surface-hover: rgba(255,200,130,0.12);
+      --border: rgba(255,180,80,0.1);
+      --border-hover: rgba(255,180,80,0.25);
+      --text: #f5ede0;
+      --muted: rgba(245,237,224,0.45);
+      --accent: #f59e0b;
+      --accent2: #ef4444;
+      --glow: rgba(245,158,11,0.16);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.4s, color 0.4s;
+      overflow-x: hidden;
+    }
+
+    /* Background */
+    .bg-noise {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    .bg-gradient {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 10%, var(--glow), transparent),
+        radial-gradient(ellipse 40% 40% at 80% 80%, var(--glow), transparent);
+      transition: background 0.5s;
+    }
+
+    /* Layout */
+    .wrapper { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      padding: 16px 0;
+      background: transparent;
+    }
+
+    nav .inner {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 20px;
+      transition: background 0.4s, border 0.4s;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo span { font-weight: 400; opacity: 0.6; }
+
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+
+    /* Theme switcher */
+    .theme-group {
+      display: flex; gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .theme-btn {
+      width: 28px; height: 28px;
+      border: none; border-radius: 8px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent;
+      transition: background 0.2s, transform 0.15s;
+      position: relative;
+    }
+
+    .theme-btn:hover { background: var(--surface-hover); transform: scale(1.1); }
+    .theme-btn.active { background: var(--surface-hover); box-shadow: 0 0 0 1.5px var(--accent); }
+
+    .theme-btn svg { width: 15px; height: 15px; fill: var(--text); opacity: 0.7; }
+    .theme-btn.active svg { opacity: 1; fill: var(--accent); }
+
+    /* HERO */
+    .hero {
+      padding: 80px 0 56px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--surface);
+      backdrop-filter: var(--card-blur);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 14px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-badge svg { width: 12px; height: 12px; fill: var(--accent); flex-shrink: 0; }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      animation: fadeUp 0.6s 0.08s ease both;
+    }
+
+    .hero h1 .grad {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 18px;
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-inline: auto;
+      font-weight: 300;
+      animation: fadeUp 0.6s 0.16s ease both;
+    }
+
+    /* Search */
+    .search-wrap {
+      margin: 36px auto 0;
+      max-width: 420px;
+      position: relative;
+      animation: fadeUp 0.6s 0.24s ease both;
+    }
+
+    .search-icon {
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      width: 16px; height: 16px;
+      fill: none; stroke: var(--muted); stroke-width: 2;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 16px 13px 44px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border 0.2s, background 0.2s;
+    }
+
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--accent); background: var(--surface-hover); }
+
+    /* Stats */
+    .stats-row {
+      display: flex; justify-content: center; gap: 32px;
+      margin-top: 40px;
+      animation: fadeUp 0.6s 0.32s ease both;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 0 48px;
+    }
+
+    /* Grid */
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .count-badge {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 3px 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 14px;
+      transition: border 0.25s, background 0.25s, transform 0.25s, box-shadow 0.25s;
+      animation: fadeUp 0.5s ease both;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -20%, var(--glow), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover { 
+      border-color: var(--border-hover); 
+      background: var(--surface-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px -8px rgba(0,0,0,0.3);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-top { display: flex; align-items: center; gap: 14px; }
+
+    .card-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden; flex-shrink: 0;
+      background: var(--surface-hover);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .card-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    .card-icon-fallback {
+      width: 26px; height: 26px;
+      fill: none; stroke: var(--muted); stroke-width: 1.5;
+    }
+
+    .card-meta { flex: 1; min-width: 0; }
+
+    .card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(91,140,255,0.1);
+      border: 1px solid rgba(91,140,255,0.2);
+      border-radius: 6px;
+      padding: 2px 7px;
+      margin-top: 4px;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer { display: flex; align-items: center; justify-content: flex-end; margin-top: auto; }
+
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 9px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-download:hover { opacity: 0.88; transform: scale(1.03); }
+    .btn-download svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; }
+
+    /* Skeleton */
+    .skeleton {
+      background: var(--surface);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .sk { background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 50%, var(--surface) 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
+    .sk-top { display: flex; gap: 14px; align-items: center; }
+    .sk-icon { width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0; }
+    .sk-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .sk-line { height: 12px; }
+    .sk-line.short { width: 50%; }
+    .sk-body { height: 50px; }
+    .sk-foot { height: 36px; width: 120px; margin-left: auto; border-radius: 12px; }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Error */
+    .error-box {
+      background: var(--surface);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .error-box svg { width: 36px; height: 36px; fill: none; stroke: rgba(239,68,68,0.6); stroke-width: 1.5; margin-bottom: 12px; }
+
+    .error-box h3 { font-family: 'Syne', sans-serif; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+
+    /* Empty */
+    .empty-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    .empty-box svg { width: 36px; height: 36px; fill: none; stroke: var(--muted); stroke-width: 1.5; margin-bottom: 12px; }
+
+    /* Footer */
+    footer {
+      margin-top: 80px;
+      padding: 32px 0 40px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:nth-child(1) { animation-delay: 0.00s; }
+    .card:nth-child(2) { animation-delay: 0.06s; }
+    .card:nth-child(3) { animation-delay: 0.12s; }
+    .card:nth-child(4) { animation-delay: 0.18s; }
+    .card:nth-child(5) { animation-delay: 0.24s; }
+    .card:nth-child(6) { animation-delay: 0.30s; }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      .hero { padding: 56px 0 36px; }
+      .stats-row { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg-noise"></div>
+<div class="bg-gradient"></div>
+
+<div class="wrapper">
+
+  <!-- NAV -->
+  <nav>
+    <div class="inner">
+      <div class="logo">Skhymm<span>Sborks</span></div>
+      <div class="nav-right">
+        <div class="theme-group">
+          <!-- Dark -->
+          <button class="theme-btn active" data-theme="dark" title="Тёмная тема">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+          <!-- Light -->
+          <button class="theme-btn" data-theme="light" title="Светлая тема">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3" stroke-width="2" stroke="currentColor" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+              <line x1="12" y1="21" x2="12" y2="23" stroke-width="2" stroke="currentColor" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+              <line x1="1" y1="12" x2="3" y2="12" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+              <line x1="21" y1="12" x2="23" y2="12" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" style="fill:none;stroke:var(--text);stroke-width:2;stroke-linecap:round"/>
+            </svg>
+          </button>
+          <!-- Warm -->
+          <button class="theme-btn" data-theme="warm" title="Тёплая тема">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      КРМП · Black Russia
+    </div>
+    <h1>Сборки<br><span class="grad">нового уровня</span></h1>
+    <p class="hero-sub">Лучшие сборки для КРМП Black Russia от Skhymm. Качество, стабильность, стиль.</p>
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input class="search-input" type="text" id="searchInput" placeholder="Поиск сборки..." />
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num" id="statCount">—</div>
+        <div class="stat-label">Сборок</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">v2</div>
+        <div class="stat-label">Версия</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">BR</div>
+        <div class="stat-label">Black Russia</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- GRID SECTION -->
+  <div class="section-head">
+    <div class="section-title">Все сборки</div>
+    <div class="count-badge" id="countBadge">загрузка...</div>
+  </div>
+
+  <div class="grid" id="grid">
+    <!-- Skeleton -->
+    <div class="skeleton">
+      <div class="sk-top"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line"></div><div class="sk sk-line short"></div></div></div>
+      <div class="sk sk-body"></div>
+      <div class="sk sk-foot"></div>
+    </div>
+    <div class="skeleton">
+      <div class="sk-top"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line"></div><div class="sk sk-line short"></div></div></div>
+      <div class="sk sk-body"></div>
+      <div class="sk sk-foot"></div>
+    </div>
+    <div class="skeleton">
+      <div class="sk-top"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line"></div><div class="sk sk-line short"></div></div></div>
+      <div class="sk sk-body"></div>
+      <div class="sk sk-foot"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>SkhymmSborks &mdash; сборки для <a href="https://blackrussia.online" target="_blank">КРМП Black Russia</a></p>
+    <p style="margin-top:6px;opacity:0.5;">Данные загружаются с <a href="https://github.com/Skhymmoza/SkhymmSborks/blob/main/sborks.json" target="_blank">GitHub</a></p>
+  </footer>
+
+</div>
+
+<script>
+  // ─── THEME ───────────────────────────────────────────────────────────────────
+  const root = document.documentElement;
+  const themeBtns = document.querySelectorAll('.theme-btn');
+
+  function setTheme(t) {
+    root.setAttribute('data-theme', t);
+    themeBtns.forEach(b => b.classList.toggle('active', b.dataset.theme === t));
+    localStorage.setItem('theme', t);
+  }
+
+  themeBtns.forEach(b => b.addEventListener('click', () => setTheme(b.dataset.theme)));
+  setTheme(localStorage.getItem('theme') || 'dark');
+
+  // ─── DATA ────────────────────────────────────────────────────────────────────
+  const RAW_URL = 'https://raw.githubusercontent.com/Skhymmoza/SkhymmSborks/main/sborks.json';
+  const grid = document.getElementById('grid');
+  const searchInput = document.getElementById('searchInput');
+  const statCount = document.getElementById('statCount');
+  const countBadge = document.getElementById('countBadge');
+
+  let allItems = [];
+
+  function iconSVG() {
+    return `<svg class="card-icon-fallback" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 12h6M12 9v6"/>
+    </svg>`;
+  }
+
+  function downloadSVG() {
+    return `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>`;
+  }
+
+  function renderCard(item, i) {
+    const hasIcon = item.icon && item.icon.trim();
+    const iconHTML = hasIcon
+      ? `<img src="${item.icon}" alt="${item.name}" onerror="this.parentElement.innerHTML='${iconSVG().replace(/'/g, "\\'")}'">`
+      : iconSVG();
+
+    return `
+      <div class="card" style="animation-delay:${i * 0.06}s">
+        <div class="card-top">
+          <div class="card-icon">${iconHTML}</div>
+          <div class="card-meta">
+            <div class="card-name">${item.name || 'Без названия'}</div>
+            <span class="card-tag">Сборка</span>
+          </div>
+        </div>
+        <div class="card-desc">${item.description || 'Описание отсутствует'}</div>
+        <div class="card-footer">
+          ${item.download_link
+            ? `<a class="btn-download" href="${item.download_link}" target="_blank" rel="noopener">${downloadSVG()} Скачать</a>`
+            : `<span style="font-size:0.75rem;color:var(--muted)">Ссылка недоступна</span>`
+          }
+        </div>
+      </div>`;
+  }
+
+  function renderList(items) {
+    if (!items.length) {
+      grid.innerHTML = `
+        <div class="empty-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M8 11h6"/></svg>
+          <h3>Ничего не найдено</h3>
+          <p>Попробуйте другой запрос</p>
+        </div>`;
+      return;
+    }
+    grid.innerHTML = items.map((item, i) => renderCard(item, i)).join('');
+  }
+
+  function filterItems(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) return allItems;
+    return allItems.filter(item =>
+      (item.name || '').toLowerCase().includes(q) ||
+      (item.description || '').toLowerCase().includes(q)
+    );
+  }
+
+  searchInput.addEventListener('input', e => {
+    const filtered = filterItems(e.target.value);
+    countBadge.textContent = `${filtered.length} из ${allItems.length}`;
+    renderList(filtered);
+  });
+
+  async function loadData() {
+    try {
+      const res = await fetch(RAW_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      allItems = Array.isArray(data) ? data : [data];
+
+      statCount.textContent = allItems.length;
+      countBadge.textContent = `${allItems.length} сборок`;
+      renderList(allItems);
+    } catch (err) {
+      grid.innerHTML = `
+        <div class="error-box" style="grid-column:1/-1">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <h3>Не удалось загрузить сборки</h3>
+          <p style="margin-top:6px;font-size:0.8rem">${err.message}</p>
+        </div>`;
+      statCount.textContent = '!';
+      countBadge.textContent = 'ошибка';
+    }
+  }
+
+  loadData();
+</script>
+</body>
+</html>
