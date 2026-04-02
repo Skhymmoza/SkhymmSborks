@@ -1,6 +1,6 @@
 {
   "download_link": "test.com",
   "icon": "assets/test.png",
-  "name": "test",
-  "description": "test sborka for site"
+  "name": "SAMP Сборка для БР",
+  "description": "Первая сборка на сайте, добавляет иконки из GTA SAMP, маркер, кнопки."
 }
